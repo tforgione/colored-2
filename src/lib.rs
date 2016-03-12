@@ -7,36 +7,15 @@
 #[macro_use(expect)]
 extern crate expectest;
 
+mod color;
+mod style;
+
+use color::*;
+
 use std::convert::From;
 use std::ops::Deref;
 use std::string::String;
 use std::fmt;
-
-#[derive(Debug,PartialEq, Eq)]
-enum Color {
-    Black,
-    Red,
-    Green,
-    Yellow,
-    Blue,
-    Magenta,
-    Cyan,
-    White
-}
-
-#[derive(Debug,PartialEq, Eq)]
-enum Styles {
-    Clear       = 0b0000_0000,
-    Bold        = 0b0000_0001,
-    Underline   = 0b0000_0010,
-    Reversed    = 0b0000_0100,
-    Italic      = 0b0000_1000,
-    Blink       = 0b0001_0000,
-    Hidden      = 0b0010_0000
-}
-
-#[derive(Debug,PartialEq,Eq)]
-struct Style(u8);
 
 /// Colored mean both color or styled
 #[derive(Debug,PartialEq, Eq)]
@@ -44,14 +23,13 @@ pub struct ColoredString {
     input: String,
     fgcolor: Option<Color>,
     bgcolor: Option<Color>,
-    style: Style
+    style: style::Style
 }
 
 pub trait Colorize {
     // Colors
-    //fn black(self) -> ColoredString;
+    fn black(self) -> ColoredString;
     fn red(self) -> ColoredString;
-    /*
     fn green(self) -> ColoredString;
     fn yellow(self) -> ColoredString;
     fn blue(self) -> ColoredString;
@@ -60,6 +38,7 @@ pub trait Colorize {
     fn cyan(self) -> ColoredString;
     fn white(self) -> ColoredString;
     // Styles
+    /*
     fn clear(self) -> ColoredString;
     fn normal(self) -> ColoredString;
     fn bold(self) -> ColoredString;
@@ -75,7 +54,7 @@ pub trait Colorize {
 impl ColoredString {
     pub fn is_plain(&self) -> bool {
         (self.bgcolor.is_none() && self.fgcolor.is_none()
-            && self.style == Style(Styles::Clear as u8))
+            && self.style == style::CLEAR)
     }
 }
 
@@ -85,7 +64,7 @@ impl Default for ColoredString {
             input: String::default(),
             fgcolor: None,
             bgcolor: None,
-            style: Style(0)
+            style: style::CLEAR
         }
     }
 }
@@ -105,15 +84,46 @@ impl<'a> From<&'a str> for ColoredString {
     }
 }
 
+macro_rules! def_color {
+    ($name: ident => $color: path) => {
+        fn $name(self) -> ColoredString {
+            ColoredString {
+                fgcolor: Some($color), .. self
+            }
+        }
+    };
+}
+
 impl Colorize for ColoredString {
+    def_color!(black => Color::Black);
     fn red(self) -> ColoredString {
         ColoredString {
             fgcolor: Some(Color::Red), .. self
         }
     }
+    def_color!(green => Color::Green);
+    def_color!(yellow => Color::Yellow);
+    def_color!(blue => Color::Blue);
+    def_color!(magenta => Color::Magenta);
+    def_color!(purple => Color::Magenta);
+    def_color!(cyan => Color::Cyan);
+    def_color!(white => Color::White);
+}
+
+macro_rules! def_str_color {
+    ($name: ident => $color: path) => {
+        fn $name(self) -> ColoredString {
+            ColoredString {
+                input: String::from(self),
+                fgcolor: Some($color),
+                .. ColoredString::default()
+            }
+        }
+    }
 }
 
 impl<'a> Colorize for &'a str {
+    def_str_color!(black => Color::Black);
     fn red(self) -> ColoredString {
         ColoredString {
             input: String::from(self),
@@ -121,42 +131,13 @@ impl<'a> Colorize for &'a str {
             .. ColoredString::default()
         }
     }
-}
-
-impl Color {
-    fn to_fg_str(&self) -> &str {
-        use Color::*;
-        match *self {
-            Black => "30",
-            Red => "31",
-            Green => "32",
-            Yellow => "33",
-            Blue => "34",
-            Magenta => "35",
-            Cyan => "36",
-            White => "37"
-        }
-    }
-
-    fn to_bg_str(&self) -> &str {
-        use Color::*;
-        match *self {
-            Black => "40",
-            Red => "41",
-            Green => "42",
-            Yellow => "43",
-            Blue => "44",
-            Magenta => "45",
-            Cyan => "46",
-            White => "47"
-        }
-    }
-}
-
-impl Style {
-    fn to_str(&self) -> &str {
-        unreachable!()
-    }
+    def_str_color!(green => Color::Green);
+    def_str_color!(yellow => Color::Yellow);
+    def_str_color!(blue => Color::Blue);
+    def_str_color!(magenta => Color::Magenta);
+    def_str_color!(purple => Color::Magenta);
+    def_str_color!(cyan => Color::Cyan);
+    def_str_color!(white => Color::White);
 }
 
 impl fmt::Display for ColoredString {
@@ -168,7 +149,7 @@ impl fmt::Display for ColoredString {
 
         try!(f.write_str("\x1B["));
 
-        if self.style != Style(0) {
+        if self.style != style::CLEAR {
             try!(f.write_str(self.style.to_str()));
             try!(f.write_str(";"))
         }
