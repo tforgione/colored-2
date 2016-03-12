@@ -26,7 +26,6 @@ pub struct Style(u8);
 
 #[derive(Clone,Copy,PartialEq,Eq,Debug)]
 pub enum Styles {
-    Clear,
     Bold,
     Dimmed,
     Underline,
@@ -46,13 +45,11 @@ impl Styles {
             Styles::Blink => "5",
             Styles::Reversed => "6",
             Styles::Hidden => "7",
-            _ => ""
         }
     }
 
     fn to_u8(self) -> u8 {
         match self {
-            Styles::Clear => CLEARV,
             Styles::Bold => BOLD,
             Styles::Dimmed => DIMMED,
             Styles::Italic => ITALIC,
@@ -106,6 +103,6 @@ impl Style {
     }
 
     pub fn from_both(one: Style, two: Styles) -> Style {
-        Style(one.0 & two.to_u8())
+        Style(one.0 | two.to_u8())
     }
 }

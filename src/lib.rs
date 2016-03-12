@@ -118,8 +118,13 @@ impl Colorize for ColoredString {
     def_color!(cyan => Color::Cyan);
     def_color!(white => Color::White);
 
-    def_style!(clear, style::Styles::Clear);
-    def_style!(normal, style::Styles::Clear);
+    fn clear(self) -> ColoredString {
+        ColoredString {
+            input: self.input,
+            .. ColoredString::default()
+        }
+    }
+    fn normal(self) -> ColoredString { self.clear() }
     def_style!(bold, style::Styles::Bold);
     def_style!(dimmed, style::Styles::Dimmed);
     def_style!(italic, style::Styles::Italic);
@@ -170,8 +175,14 @@ impl<'a> Colorize for &'a str {
     def_str_color!(cyan => Color::Cyan);
     def_str_color!(white => Color::White);
 
-    def_str_style!(clear, style::Styles::Clear);
-    def_str_style!(normal, style::Styles::Clear);
+    fn clear(self) -> ColoredString {
+        ColoredString {
+            input: String::from(self),
+            style: style::CLEAR,
+            .. ColoredString::default()
+        }
+    }
+    fn normal(self) -> ColoredString { self.clear() }
     def_str_style!(bold, style::Styles::Bold);
     def_str_style!(dimmed, style::Styles::Dimmed);
     def_str_style!(italic, style::Styles::Italic);
@@ -222,7 +233,22 @@ mod tests {
         println!("{}", toto.red());
         println!("{}", String::from(toto).red());
         println!("{}", toto.blue());
+
+        println!("blue style ****");
+        println!("{}", toto.bold());
+        println!("{}", "yeah ! Red bold !".red().bold());
+        println!("{}", "yeah ! Yellow bold !".bold().yellow());
+        println!("{}", toto.bold().blue());
         println!("{}", toto.blue().bold());
+        println!("{}", toto.blue().bold().underline());
+        println!("{}", toto.blue().italic());
+        println!("******");
+        println!("test clearing");
+        println!("{}", "red cleared".red().clear());
+        println!("{}", "bold cyan cleared".bold().cyan().clear());
+        println!("******");
+
+
         println!("{}", toto.green());
         println!("{}", toto.yellow());
         println!("{}", toto.purple());
