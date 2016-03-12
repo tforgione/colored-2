@@ -1,0 +1,11 @@
+[package]
+name = "colored"
+version = "0.1.0"
+authors = ["Thomas Wickham <mackwic@gmail.com>"]
+
+[dependencies]
+ansi_term = "0.7"
+
+clippy = "*"
+# FIXME test only
+expectest = "0.4"
