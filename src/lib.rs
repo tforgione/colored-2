@@ -38,7 +38,6 @@ pub trait Colorize {
     fn cyan(self) -> ColoredString;
     fn white(self) -> ColoredString;
     // Styles
-    /*
     fn clear(self) -> ColoredString;
     fn normal(self) -> ColoredString;
     fn bold(self) -> ColoredString;
@@ -48,7 +47,6 @@ pub trait Colorize {
     fn blink(self) -> ColoredString;
     fn reverse(self) -> ColoredString;
     fn hidden(self) -> ColoredString;
-    */
 }
 
 impl ColoredString {
@@ -94,6 +92,17 @@ macro_rules! def_color {
     };
 }
 
+macro_rules! def_style {
+    ($name: ident, $value: path) => {
+        fn $name(self) -> ColoredString {
+            ColoredString {
+                style: style::Style::from_both(self.style, $value),
+                .. self
+            }
+        }
+    };
+}
+
 impl Colorize for ColoredString {
     def_color!(black => Color::Black);
     fn red(self) -> ColoredString {
@@ -108,6 +117,16 @@ impl Colorize for ColoredString {
     def_color!(purple => Color::Magenta);
     def_color!(cyan => Color::Cyan);
     def_color!(white => Color::White);
+
+    def_style!(clear, style::Styles::Clear);
+    def_style!(normal, style::Styles::Clear);
+    def_style!(bold, style::Styles::Bold);
+    def_style!(dimmed, style::Styles::Dimmed);
+    def_style!(italic, style::Styles::Italic);
+    def_style!(underline, style::Styles::Underline);
+    def_style!(blink, style::Styles::Blink);
+    def_style!(reverse, style::Styles::Reversed);
+    def_style!(hidden, style::Styles::Hidden);
 }
 
 macro_rules! def_str_color {
@@ -116,6 +135,18 @@ macro_rules! def_str_color {
             ColoredString {
                 input: String::from(self),
                 fgcolor: Some($color),
+                .. ColoredString::default()
+            }
+        }
+    }
+}
+
+macro_rules! def_str_style {
+    ($name:ident, $style:path) => {
+        fn $name(self) -> ColoredString {
+            ColoredString {
+                input: String::from(self),
+                style: style::Style::new($style),
                 .. ColoredString::default()
             }
         }
@@ -138,6 +169,16 @@ impl<'a> Colorize for &'a str {
     def_str_color!(purple => Color::Magenta);
     def_str_color!(cyan => Color::Cyan);
     def_str_color!(white => Color::White);
+
+    def_str_style!(clear, style::Styles::Clear);
+    def_str_style!(normal, style::Styles::Clear);
+    def_str_style!(bold, style::Styles::Bold);
+    def_str_style!(dimmed, style::Styles::Dimmed);
+    def_str_style!(italic, style::Styles::Italic);
+    def_str_style!(underline, style::Styles::Underline);
+    def_str_style!(blink, style::Styles::Blink);
+    def_str_style!(reverse, style::Styles::Reversed);
+    def_str_style!(hidden, style::Styles::Hidden);
 }
 
 impl fmt::Display for ColoredString {
@@ -150,7 +191,7 @@ impl fmt::Display for ColoredString {
         try!(f.write_str("\x1B["));
 
         if self.style != style::CLEAR {
-            try!(f.write_str(self.style.to_str()));
+            try!(f.write_str(&self.style.to_str()));
             try!(f.write_str(";"))
         }
 
@@ -180,7 +221,6 @@ mod tests {
         let toto = "toto";
         println!("{}", toto.red());
         println!("{}", String::from(toto).red());
-        /*
         println!("{}", toto.blue());
         println!("{}", toto.blue().bold());
         println!("{}", toto.green());
@@ -190,7 +230,7 @@ mod tests {
         println!("{}", toto.cyan());
         println!("{}", toto.white());
         println!("{}", toto.white().red().blue().green());
-        */
+        //*/
         assert!(false)
         //expect!(Style::default().paint("default").red().to_string()).to(be_equal_to("default"));
         // assert!("plop".red().to_string() != "plop")
