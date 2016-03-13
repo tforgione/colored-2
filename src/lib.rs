@@ -1,7 +1,4 @@
-#![feature(plugin)]
-#![plugin(clippy)]
-#![warn(clippy_pedantic)]
-#![allow(print_stdout,shadow_reuse,unused_imports,dead_code,enum_glob_use)]
+#![allow(unused_imports,dead_code)]
 
 mod color;
 mod style;
@@ -286,8 +283,14 @@ mod tests {
         println!("{}", "red cleared".red().clear());
         println!("{}", "bold cyan cleared".bold().cyan().clear());
         println!("******");
-
-
+        println!("Bg tests");
+        println!("{}", toto.green().on_blue());
+        println!("{}", toto.on_magenta().yellow());
+        println!("{}", toto.purple().on_yellow());
+        println!("{}", toto.magenta().on_white());
+        println!("{}", toto.cyan().on_green());
+        println!("{}", toto.black().on_white());
+        println!("******");
         println!("{}", toto.green());
         println!("{}", toto.yellow());
         println!("{}", toto.purple());
@@ -295,9 +298,7 @@ mod tests {
         println!("{}", toto.cyan());
         println!("{}", toto.white());
         println!("{}", toto.white().red().blue().green());
-        //*/
-        assert!(false)
-        //expect!(Style::default().paint("default").red().to_string()).to(be_equal_to("default"));
-        // assert!("plop".red().to_string() != "plop")
+        // uncomment to see term output
+        //assert!(false)
     }
 }

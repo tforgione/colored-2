@@ -5,5 +5,3 @@ authors = ["Thomas Wickham <mackwic@gmail.com>"]
 
 [dependencies]
 ansi_term = "*"
-# FIXME only with feature clippy
-clippy = "*"
