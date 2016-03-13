@@ -4,8 +4,6 @@ version = "0.1.0"
 authors = ["Thomas Wickham <mackwic@gmail.com>"]
 
 [dependencies]
-ansi_term = "0.7"
-
+ansi_term = "*"
+# FIXME only with feature clippy
 clippy = "*"
-# FIXME test only
-expectest = "0.4"

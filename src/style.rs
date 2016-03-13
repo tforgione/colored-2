@@ -26,6 +26,7 @@ pub struct Style(u8);
 
 #[derive(Clone,Copy,PartialEq,Eq,Debug)]
 pub enum Styles {
+    Clear,
     Bold,
     Dimmed,
     Underline,
@@ -38,6 +39,7 @@ pub enum Styles {
 impl Styles {
     fn to_str<'a>(self) -> &'a str {
         match self {
+            Styles::Clear => "", // unreachable, but we don't want to panic
             Styles::Bold => "1",
             Styles::Dimmed => "2",
             Styles::Italic => "3",
@@ -50,6 +52,7 @@ impl Styles {
 
     fn to_u8(self) -> u8 {
         match self {
+            Styles::Clear => CLEARV,
             Styles::Bold => BOLD,
             Styles::Dimmed => DIMMED,
             Styles::Italic => ITALIC,
@@ -65,14 +68,16 @@ impl Styles {
             return None;
         }
 
-        let res = STYLES.into_iter()
-            .filter(|&&(ref mask,_)| (1 == (u & mask)))
+        let res : Vec<Styles> = STYLES.into_iter()
+            .filter(|&&(ref mask,_)| (0 != (u & mask)))
             .map(|&(_,value)| value)
             .collect();
-        Some(res)
+        if res.is_empty() {
+            None
+        } else {
+            Some(res)
+        }
     }
-
-
 }
 
 impl Style {
@@ -83,7 +88,7 @@ impl Style {
             Some(s) => s
         };
         let mut res = String::new();
-        let mut first = false;
+        let mut first = true;
 
         for style in styles.iter().map(|s| s.to_str()) {
             if first {

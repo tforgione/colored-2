@@ -1,11 +1,7 @@
 #![feature(plugin)]
 #![plugin(clippy)]
 #![warn(clippy_pedantic)]
-#![allow(print_stdout)]
-
-#[cfg(test)]
-#[macro_use(expect)]
-extern crate expectest;
+#![allow(print_stdout,shadow_reuse,unused_imports,dead_code,enum_glob_use)]
 
 mod color;
 mod style;
@@ -27,7 +23,7 @@ pub struct ColoredString {
 }
 
 pub trait Colorize {
-    // Colors
+    // Font Colors
     fn black(self) -> ColoredString;
     fn red(self) -> ColoredString;
     fn green(self) -> ColoredString;
@@ -37,6 +33,16 @@ pub trait Colorize {
     fn purple(self) -> ColoredString;
     fn cyan(self) -> ColoredString;
     fn white(self) -> ColoredString;
+    // Background Colors
+    fn on_black(self) -> ColoredString;
+    fn on_red(self) -> ColoredString;
+    fn on_green(self) -> ColoredString;
+    fn on_yellow(self) -> ColoredString;
+    fn on_blue(self) -> ColoredString;
+    fn on_magenta(self) -> ColoredString;
+    fn on_purple(self) -> ColoredString;
+    fn on_cyan(self) -> ColoredString;
+    fn on_white(self) -> ColoredString;
     // Styles
     fn clear(self) -> ColoredString;
     fn normal(self) -> ColoredString;
@@ -83,10 +89,10 @@ impl<'a> From<&'a str> for ColoredString {
 }
 
 macro_rules! def_color {
-    ($name: ident => $color: path) => {
+    ($side:ident: $name: ident => $color: path) => {
         fn $name(self) -> ColoredString {
             ColoredString {
-                fgcolor: Some($color), .. self
+                $side: Some($color), .. self
             }
         }
     };
@@ -104,19 +110,33 @@ macro_rules! def_style {
 }
 
 impl Colorize for ColoredString {
-    def_color!(black => Color::Black);
+    def_color!(fgcolor: black => Color::Black);
     fn red(self) -> ColoredString {
         ColoredString {
             fgcolor: Some(Color::Red), .. self
         }
     }
-    def_color!(green => Color::Green);
-    def_color!(yellow => Color::Yellow);
-    def_color!(blue => Color::Blue);
-    def_color!(magenta => Color::Magenta);
-    def_color!(purple => Color::Magenta);
-    def_color!(cyan => Color::Cyan);
-    def_color!(white => Color::White);
+    def_color!(fgcolor: green => Color::Green);
+    def_color!(fgcolor: yellow => Color::Yellow);
+    def_color!(fgcolor: blue => Color::Blue);
+    def_color!(fgcolor: magenta => Color::Magenta);
+    def_color!(fgcolor: purple => Color::Magenta);
+    def_color!(fgcolor: cyan => Color::Cyan);
+    def_color!(fgcolor: white => Color::White);
+
+    def_color!(bgcolor: on_black => Color::Black);
+    fn on_red(self) -> ColoredString {
+        ColoredString {
+            bgcolor: Some(Color::Red), .. self
+        }
+    }
+    def_color!(bgcolor: on_green => Color::Green);
+    def_color!(bgcolor: on_yellow => Color::Yellow);
+    def_color!(bgcolor: on_blue => Color::Blue);
+    def_color!(bgcolor: on_magenta => Color::Magenta);
+    def_color!(bgcolor: on_purple => Color::Magenta);
+    def_color!(bgcolor: on_cyan => Color::Cyan);
+    def_color!(bgcolor: on_white => Color::White);
 
     fn clear(self) -> ColoredString {
         ColoredString {
@@ -135,11 +155,11 @@ impl Colorize for ColoredString {
 }
 
 macro_rules! def_str_color {
-    ($name: ident => $color: path) => {
+    ($side:ident: $name: ident => $color: path) => {
         fn $name(self) -> ColoredString {
             ColoredString {
                 input: String::from(self),
-                fgcolor: Some($color),
+                $side: Some($color),
                 .. ColoredString::default()
             }
         }
@@ -159,7 +179,7 @@ macro_rules! def_str_style {
 }
 
 impl<'a> Colorize for &'a str {
-    def_str_color!(black => Color::Black);
+    def_str_color!(fgcolor: black => Color::Black);
     fn red(self) -> ColoredString {
         ColoredString {
             input: String::from(self),
@@ -167,13 +187,29 @@ impl<'a> Colorize for &'a str {
             .. ColoredString::default()
         }
     }
-    def_str_color!(green => Color::Green);
-    def_str_color!(yellow => Color::Yellow);
-    def_str_color!(blue => Color::Blue);
-    def_str_color!(magenta => Color::Magenta);
-    def_str_color!(purple => Color::Magenta);
-    def_str_color!(cyan => Color::Cyan);
-    def_str_color!(white => Color::White);
+    def_str_color!(fgcolor: green => Color::Green);
+    def_str_color!(fgcolor: yellow => Color::Yellow);
+    def_str_color!(fgcolor: blue => Color::Blue);
+    def_str_color!(fgcolor: magenta => Color::Magenta);
+    def_str_color!(fgcolor: purple => Color::Magenta);
+    def_str_color!(fgcolor: cyan => Color::Cyan);
+    def_str_color!(fgcolor: white => Color::White);
+
+    def_str_color!(bgcolor: on_black => Color::Black);
+    fn on_red(self) -> ColoredString {
+        ColoredString {
+            input: String::from(self),
+            bgcolor: Some(Color::Red),
+            .. ColoredString::default()
+        }
+    }
+    def_str_color!(bgcolor: on_green => Color::Green);
+    def_str_color!(bgcolor: on_yellow => Color::Yellow);
+    def_str_color!(bgcolor: on_blue => Color::Blue);
+    def_str_color!(bgcolor: on_magenta => Color::Magenta);
+    def_str_color!(bgcolor: on_purple => Color::Magenta);
+    def_str_color!(bgcolor: on_cyan => Color::Cyan);
+    def_str_color!(bgcolor: on_white => Color::White);
 
     fn clear(self) -> ColoredString {
         ColoredString {
@@ -194,28 +230,32 @@ impl<'a> Colorize for &'a str {
 
 impl fmt::Display for ColoredString {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+
         if self.is_plain() {
             try!(f.write_str(&self.input));
             return Ok(())
         }
 
         try!(f.write_str("\x1B["));
+        let mut has_wrote = false;
 
         if self.style != style::CLEAR {
             try!(f.write_str(&self.style.to_str()));
-            try!(f.write_str(";"))
+            has_wrote = true;
         }
 
         if let Some(ref color) = self.bgcolor {
+            if has_wrote { try!(f.write_str(";")) }
             try!(f.write_str(color.to_bg_str()));
-            try!(f.write_str(";"))
+            has_wrote = true;
         }
 
         if let Some(ref color) = self.fgcolor {
-            try!(f.write_str(color.to_fg_str()))
+            if has_wrote { try!(f.write_str(";")) }
+            try!(f.write_str(color.to_fg_str()));
         }
 
-        try!(f.write_str("m"));
+        try!(f.write_str("m")   );
         try!(f.write_str(&self.input));
         try!(f.write_str("\x1B[0m"));
         Ok(())
@@ -225,7 +265,6 @@ impl fmt::Display for ColoredString {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use expectest::prelude::*;
 
     #[test]
     fn it_works() {
