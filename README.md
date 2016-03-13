@@ -1,4 +1,4 @@
-# <span style="color:black">C</span><span style="color:red">o</span><span style="color:green">l</span><span style="color:yellow">o</span><span style="color:blue">r</span><span style="color:magenta">e</span><span style="color:cyan">d</span>
+# Colored
 
 [![Build
 Status](https://travis-ci.org/mackwic/colored.svg?branch=master)](https://travis-ci.org/mackwic/colored)
@@ -16,7 +16,7 @@ Coloring terminal so simple, you already know how to do it !
     "or clear things up. This is default color and style".red().bold().clear()
     "purple and magenta are the same".purple().magenta()
     "and so are normal and clear".normal().clear()
-    String::new("this works also !").green().bold()
+    String::new("this also works!").green().bold()
 ```
 
 ## How to use
@@ -24,17 +24,18 @@ Coloring terminal so simple, you already know how to do it !
 Add this in your `Cargo.toml`:
 
 ```toml
-    [dependencies]
-    colored = "1.0"
+[dependencies]
+colored = "1.0"
 ```
 
 and add this to your `lib.rs` or `main.rs`:
 
 ```rust
     extern crate colored;
-
+    
     use colored::*;
     
+    // test the example with `cargo run --example most_simple`
     fn main() {
         // TADAA !
         println!("{} {} !", "it".green(), "works".blue().bold());
@@ -68,13 +69,21 @@ You can clear color _and_ style anytime by using `normal()` or `clear()`
 
 ## Todo
 
-- *Windows console support*: this works only with ansi term. I plan to support
+- **Windows console support**: this works only with ansi term. I plan to support
   the windows console also.
-- *More tests ?*: We always wecome more tests ! Please contribute !
+- **More tests ?**: We always wecome more tests ! Please contribute !
+
+## Credits
+
+This library wouldn't have been the same without the marvelous ruby gem [colored](https://github.com/defunkt/colored).
+
+Thanks for the [ansi\_term crate](https://github.com/ogham/rust-ansi-term) for
+providing a reference implementation, which greatly helped making this crate
+output correct strings.
 
 ## Licence
 
-Mozilla Public Licence 2.0.
+Mozilla Public Licence 2.0. See the LICENCE file at the root of the repository.
 
 In non legal terms it means that:
 - if you fix a bug, you MUST give me the code (it's only fair)
