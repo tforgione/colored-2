@@ -111,3 +111,170 @@ impl Style {
         Style(one.0 | two.to_u8())
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    mod u8_to_styles_invalid_is_none {
+        use super::super::CLEARV;
+        use super::super::{Styles,Style};
+
+        #[test]
+        fn empty_is_none() {
+            assert_eq!(None, Styles::from_u8(CLEARV))
+        }
+
+        #[test]
+        fn invalid_is_none() {
+            assert_eq!(None, Styles::from_u8(0b1000_0000))
+        }
+
+    }
+
+    mod u8_to_styles_isomorphism {
+        use super::super::{BOLD,UNDERLINE,REVERSED,ITALIC,BLINK,HIDDEN,DIMMED};
+        use super::super::Styles;
+
+        macro_rules! value_isomorph {
+            ($value:expr) => {{
+                let u = Styles::from_u8($value);
+                assert!(u.is_some(), "{}: Styles::from_u8 -> None", stringify!($value));
+                let u = u.unwrap();
+                assert!(u.len() == 1, "{}: Styles::from_u8 found {} styles (expected 1)", stringify!($value), u.len());
+                assert!(u[0].to_u8() == $value, "{}: to_u8() doesn't match its const value", stringify!($value));
+            }}
+        }
+
+        #[test]
+        fn bold() {
+            value_isomorph!(BOLD);
+        }
+        #[test]
+        fn underline() {
+            value_isomorph!(UNDERLINE);
+        }
+        #[test]
+        fn reversed() {
+            value_isomorph!(REVERSED);
+        }
+        #[test]
+        fn italic() {
+            value_isomorph!(ITALIC);
+        }
+        #[test]
+        fn blink() {
+            value_isomorph!(BLINK);
+        }
+        #[test]
+        fn hidden() {
+            value_isomorph!(HIDDEN);
+        }
+        #[test]
+        fn dimmed() {
+            value_isomorph!(DIMMED);
+        }
+    }
+
+    mod styles_combine_complex {
+        use super::super::{BOLD,UNDERLINE,REVERSED,ITALIC,BLINK,HIDDEN,DIMMED};
+        use super::super::{Styles,Style};
+        use super::super::Styles::*;
+
+        fn style_from_multiples(styles: &[Styles]) -> Style {
+            let mut res = Style::new(styles[0]);
+            for s in &styles[1..] {
+                res = Style::from_both(res, *s)
+            }
+            res
+        }
+
+        macro_rules! test_aggreg {
+            ( $styles:expr, $expect:expr ) => {{
+                let v = style_from_multiples($styles);
+                let r = Styles::from_u8(v.0).expect("should find styles");
+                assert_eq!(&$expect as &[Styles], &r[..])
+            }}
+        }
+
+        #[test]
+        fn aggreg1() {
+            let styles : &[Styles] = &[Bold, Bold, Bold];
+            test_aggreg!(styles, [Bold])
+        }
+
+        #[test]
+        fn aggreg2() {
+            let styles : &[Styles] = &[Italic, Italic, Bold, Bold];
+            test_aggreg!(styles, [Bold, Italic])
+        }
+
+        #[test]
+        fn aggreg3() {
+            let styles : &[Styles] = &[Bold, Italic, Bold];
+            test_aggreg!(styles, [Bold, Italic])
+        }
+
+        macro_rules! test_combine {
+            ( $styles:expr ) => {{
+                let v = style_from_multiples($styles);
+                let r = Styles::from_u8(v.0).expect("should find styles");
+                assert_eq!($styles, &r[..])
+            }}
+        }
+
+        #[test]
+        fn two1() {
+            let s : &[Styles] = &[Bold, Underline];
+            test_combine!(s)
+        }
+
+        #[test]
+        fn two2() {
+            let s : &[Styles] = &[Underline, Italic];
+            test_combine!(s)
+        }
+
+        #[test]
+        fn two3() {
+            let s : &[Styles] = &[Bold, Italic];
+            test_combine!(s)
+        }
+
+        #[test]
+        fn three1() {
+            let s : &[Styles] = &[Bold, Underline, Italic];
+            test_combine!(s)
+        }
+
+        #[test]
+        fn three2() {
+            let s : &[Styles] = &[Dimmed, Underline, Italic];
+            test_combine!(s)
+        }
+
+        #[test]
+        fn four() {
+            let s : &[Styles] = &[Dimmed, Underline, Italic, Hidden];
+            test_combine!(s)
+        }
+
+        #[test]
+        fn five() {
+            let s : &[Styles] = &[Dimmed, Underline, Italic, Blink, Hidden];
+            test_combine!(s)
+        }
+
+        #[test]
+        fn six() {
+            let s : &[Styles] = &[Bold, Dimmed, Underline, Italic, Blink, Hidden];
+            test_combine!(s)
+        }
+
+        #[test]
+        fn all() {
+            let s : &[Styles] = &[Bold, Dimmed, Underline, Reversed, Italic, Blink, Hidden];
+            test_combine!(s)
+        }
+
+    }
+}
