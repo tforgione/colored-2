@@ -136,43 +136,25 @@ mod tests {
         use super::super::Styles;
 
         macro_rules! value_isomorph {
-            ($value:expr) => {{
-                let u = Styles::from_u8($value);
-                assert!(u.is_some(), "{}: Styles::from_u8 -> None", stringify!($value));
-                let u = u.unwrap();
-                assert!(u.len() == 1, "{}: Styles::from_u8 found {} styles (expected 1)", stringify!($value), u.len());
-                assert!(u[0].to_u8() == $value, "{}: to_u8() doesn't match its const value", stringify!($value));
-            }}
+            ($name:ident, $value:expr) => {
+                #[test]
+                fn $name() {
+                    let u = Styles::from_u8($value);
+                    assert!(u.is_some(), "{}: Styles::from_u8 -> None", stringify!($value));
+                    let u = u.unwrap();
+                    assert!(u.len() == 1, "{}: Styles::from_u8 found {} styles (expected 1)", stringify!($value), u.len());
+                    assert!(u[0].to_u8() == $value, "{}: to_u8() doesn't match its const value", stringify!($value));
+                }
+            }
         }
 
-        #[test]
-        fn bold() {
-            value_isomorph!(BOLD);
-        }
-        #[test]
-        fn underline() {
-            value_isomorph!(UNDERLINE);
-        }
-        #[test]
-        fn reversed() {
-            value_isomorph!(REVERSED);
-        }
-        #[test]
-        fn italic() {
-            value_isomorph!(ITALIC);
-        }
-        #[test]
-        fn blink() {
-            value_isomorph!(BLINK);
-        }
-        #[test]
-        fn hidden() {
-            value_isomorph!(HIDDEN);
-        }
-        #[test]
-        fn dimmed() {
-            value_isomorph!(DIMMED);
-        }
+        value_isomorph!(bold, BOLD);
+        value_isomorph!(underline, UNDERLINE);
+        value_isomorph!(reversed, REVERSED);
+        value_isomorph!(italic, ITALIC);
+        value_isomorph!(blink, BLINK);
+        value_isomorph!(hidden, HIDDEN);
+        value_isomorph!(dimmed, DIMMED);
     }
 
     mod styles_combine_complex {
