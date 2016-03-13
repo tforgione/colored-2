@@ -86,8 +86,9 @@ output correct strings.
 Mozilla Public Licence 2.0. See the LICENCE file at the root of the repository.
 
 In non legal terms it means that:
-- if you fix a bug, you MUST give me the code (it's only fair)
-- if you change/extend the API, you MUST give me the code
+- if you fix a bug, you MUST give me the code of the fix (it's only fair)
+- if you change/extend the API, you MUST give me the code you changed in the
+  files under MPL2.
 - you CAN'T sue me for anything about this code
 - appart from that, you can do almost whatever you want. See the LICENCE file
   for details.

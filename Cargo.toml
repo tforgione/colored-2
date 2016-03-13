@@ -1,7 +1,13 @@
 [package]
 name = "colored"
-version = "0.1.0"
+description = "The most simple way to add colors in your terminal"
+version = "1.0.0"
 authors = ["Thomas Wickham <mackwic@gmail.com>"]
+license = "MPL-2.0"
+homepage = "https://github.com/mackwic/colored"
+repository = "https://github.com/mackwic/colored"
+readme = "README.md"
+keywords = ["color", "string", "str", "terminal", "ansi_term"]
 
 [dependencies]
-ansi_term = "*"
+ansi_term = "0.7"
