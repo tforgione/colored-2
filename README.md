@@ -97,3 +97,9 @@ In non legal terms it means that:
 - you CAN'T sue me for anything about this code
 - appart from that, you can do almost whatever you want. See the LICENCE file
   for details.
+
+## Contributors
+
+- Thomas Wickham: [@mackwic](https://github.com/mackwic)
+- Corey "See More" Richardson: [@cmr](https://github.com/cmr)
+
