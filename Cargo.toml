@@ -9,5 +9,5 @@ repository = "https://github.com/mackwic/colored"
 readme = "README.md"
 keywords = ["color", "string", "str", "terminal", "ansi_term"]
 
-[dependencies]
+[dev_dependencies]
 ansi_term = "0.7"
