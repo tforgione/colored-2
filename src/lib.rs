@@ -1,5 +1,8 @@
 #![allow(unused_imports,dead_code)]
 
+#[macro_use]
+extern crate lazy_static;
+
 mod color;
 mod style;
 
@@ -56,6 +59,20 @@ impl ColoredString {
     pub fn is_plain(&self) -> bool {
         (self.bgcolor.is_none() && self.fgcolor.is_none()
             && self.style == style::CLEAR)
+    }
+
+    fn has_colors(&self) -> bool {
+        use std::env::var_os;
+        use std::ffi::OsString;
+        fn is_good(var: Option<OsString>) -> bool {
+            var.is_none() || var != Some("0".into())
+        }
+        lazy_static! {
+            static ref COLOR_STATE : bool = (
+                (var_os("CLICOLOR_FORCE") != Some("0".into())) || is_good(var_os("CLICOLOR"))
+            );
+        }
+        *COLOR_STATE
     }
 }
 
@@ -228,7 +245,7 @@ impl<'a> Colorize for &'a str {
 impl fmt::Display for ColoredString {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 
-        if self.is_plain() {
+        if !self.has_colors() || self.is_plain() {
             try!(f.write_str(&self.input));
             return Ok(())
         }
