@@ -25,7 +25,7 @@ Add this in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-colored = "1.0"
+colored = "1.1"
 ```
 
 and add this to your `lib.rs` or `main.rs`:
@@ -41,6 +41,11 @@ and add this to your `lib.rs` or `main.rs`:
         println!("{} {} !", "it".green(), "works".blue().bold());
     }
 ```
+
+## Features
+
+- Safe rust, easy to use, minimal dependencies, complete test suite
+- Respect the `CLICOLOR`/`CLICOLOR_FORCE` behavior (see [the specs](http://bixense.com/clicolors/))
 
 #### Colors:
 

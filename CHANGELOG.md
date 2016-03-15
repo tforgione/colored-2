@@ -1,4 +1,8 @@
 
+# 1.1.0 (Mar 15, 2016)
+
+- Respect the CLICOLOR/CLICOLOR\_FORCE behavior. See [this specs](http://bixense.com/clicolors/)
+
 # 1.0.1 (Mar 14, 2016)
 
 - Add a CHANGLOG
