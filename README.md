@@ -76,11 +76,6 @@ You can clear color _and_ style anytime by using `normal()` or `clear()`
 
 - **Windows console support**: this works only with ansi term. I plan to support
   the windows console also.
-- **Optional disabling** Sometimes the user don't want colors. We won't colorize
-  when the env variable `RUST_NOCOLOR` is set.
-- **Color templating** From a brson idea, something like
-  `"{blue}this is blue{/}{bold}{yellow}this is yellow and bold{/}{/}".colorize()` ?
-  Is it really interesting ? Thinking of it.
 - **More tests ?**: We always wecome more tests ! Please contribute !
 
 ## Credits
