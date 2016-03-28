@@ -69,7 +69,7 @@ impl ColoredString {
         }
         lazy_static! {
             static ref COLOR_STATE : bool = (
-                (var_os("CLICOLOR_FORCE") != Some("0".into())) || is_good(var_os("CLICOLOR"))
+                (var_os("CLICOLOR_FORCE").or(Some("0".into())) != Some("0".into())) || is_good(var_os("CLICOLOR"))
             );
         }
         *COLOR_STATE
@@ -244,6 +244,8 @@ impl<'a> Colorize for &'a str {
 
 impl fmt::Display for ColoredString {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+
+        println!("has color: {}", self.has_colors());
 
         if !self.has_colors() || self.is_plain() {
             try!(f.write_str(&self.input));
