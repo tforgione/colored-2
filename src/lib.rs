@@ -245,8 +245,6 @@ impl<'a> Colorize for &'a str {
 impl fmt::Display for ColoredString {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 
-        println!("has color: {}", self.has_colors());
-
         if !self.has_colors() || self.is_plain() {
             try!(f.write_str(&self.input));
             return Ok(())
