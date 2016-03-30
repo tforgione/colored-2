@@ -246,8 +246,7 @@ impl fmt::Display for ColoredString {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 
         if !self.has_colors() || self.is_plain() {
-            try!(f.write_str(&self.input));
-            return Ok(())
+            return (<String as fmt::Display>::fmt(&self.input, f))
         }
 
         try!(f.write_str("\x1B["));
@@ -269,8 +268,8 @@ impl fmt::Display for ColoredString {
             try!(f.write_str(color.to_fg_str()));
         }
 
-        try!(f.write_str("m")   );
-        try!(f.write_str(&self.input));
+        try!(f.write_str("m"));
+        try!(<String as fmt::Display>::fmt(&self.input, f));
         try!(f.write_str("\x1B[0m"));
         Ok(())
     }
@@ -279,6 +278,14 @@ impl fmt::Display for ColoredString {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn formatting() {
+        // respect the formatting. Escape sequence add some padding so >= 40
+        assert!(format!("{:40}", "".blue()).len() >= 40);
+        // both should be truncated to 1 char before coloring
+        assert_eq!(format!("{:1.1}", "toto".blue()).len(), format!("{:1.1}", "1".blue()).len())
+    }
 
     #[test]
     fn it_works() {
