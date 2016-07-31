@@ -1,24 +1,22 @@
 
-const CLEARV    : u8 = 0b0000_0000;
-const BOLD      : u8 = 0b0000_0001;
-const UNDERLINE : u8 = 0b0000_0010;
-const REVERSED  : u8 = 0b0000_0100;
-const ITALIC    : u8 = 0b0000_1000;
-const BLINK     : u8 = 0b0001_0000;
-const HIDDEN    : u8 = 0b0010_0000;
-const DIMMED    : u8 = 0b0100_0000;
+const CLEARV: u8 = 0b0000_0000;
+const BOLD: u8 = 0b0000_0001;
+const UNDERLINE: u8 = 0b0000_0010;
+const REVERSED: u8 = 0b0000_0100;
+const ITALIC: u8 = 0b0000_1000;
+const BLINK: u8 = 0b0001_0000;
+const HIDDEN: u8 = 0b0010_0000;
+const DIMMED: u8 = 0b0100_0000;
 
-static STYLES : [(u8, Styles); 7] = [
-    (BOLD, Styles::Bold),
-    (DIMMED, Styles::Dimmed),
-    (UNDERLINE, Styles::Underline),
-    (REVERSED, Styles::Reversed),
-    (ITALIC, Styles::Italic),
-    (BLINK, Styles::Blink),
-    (HIDDEN, Styles::Hidden),
-];
+static STYLES: [(u8, Styles); 7] = [(BOLD, Styles::Bold),
+                                    (DIMMED, Styles::Dimmed),
+                                    (UNDERLINE, Styles::Underline),
+                                    (REVERSED, Styles::Reversed),
+                                    (ITALIC, Styles::Italic),
+                                    (BLINK, Styles::Blink),
+                                    (HIDDEN, Styles::Hidden)];
 
-pub static CLEAR : Style = Style(CLEARV);
+pub static CLEAR: Style = Style(CLEARV);
 
 
 #[derive(Clone,Copy,PartialEq,Eq,Debug)]
@@ -33,7 +31,7 @@ pub enum Styles {
     Reversed,
     Italic,
     Blink,
-    Hidden
+    Hidden,
 }
 
 impl Styles {
@@ -68,9 +66,9 @@ impl Styles {
             return None;
         }
 
-        let res : Vec<Styles> = STYLES.into_iter()
-            .filter(|&&(ref mask,_)| (0 != (u & mask)))
-            .map(|&(_,value)| value)
+        let res: Vec<Styles> = STYLES.into_iter()
+            .filter(|&&(ref mask, _)| (0 != (u & mask)))
+            .map(|&(_, value)| value)
             .collect();
         if res.is_empty() {
             None
@@ -85,7 +83,7 @@ impl Style {
 
         let styles = match Styles::from_u8(self.0) {
             None => return String::new(),
-            Some(s) => s
+            Some(s) => s,
         };
         let mut res = String::new();
         let mut first = true;
@@ -117,7 +115,7 @@ mod tests {
 
     mod u8_to_styles_invalid_is_none {
         use super::super::CLEARV;
-        use super::super::{Styles,Style};
+        use super::super::{Styles, Style};
 
         #[test]
         fn empty_is_none() {
@@ -132,7 +130,7 @@ mod tests {
     }
 
     mod u8_to_styles_isomorphism {
-        use super::super::{BOLD,UNDERLINE,REVERSED,ITALIC,BLINK,HIDDEN,DIMMED};
+        use super::super::{BOLD, UNDERLINE, REVERSED, ITALIC, BLINK, HIDDEN, DIMMED};
         use super::super::Styles;
 
         macro_rules! value_isomorph {
@@ -142,8 +140,12 @@ mod tests {
                     let u = Styles::from_u8($value);
                     assert!(u.is_some(), "{}: Styles::from_u8 -> None", stringify!($value));
                     let u = u.unwrap();
-                    assert!(u.len() == 1, "{}: Styles::from_u8 found {} styles (expected 1)", stringify!($value), u.len());
-                    assert!(u[0].to_u8() == $value, "{}: to_u8() doesn't match its const value", stringify!($value));
+                    assert!(u.len() == 1,
+                            "{}: Styles::from_u8 found {} styles (expected 1)",
+                            stringify!($value), u.len());
+                    assert!(u[0].to_u8() == $value,
+                            "{}: to_u8() doesn't match its const value",
+                            stringify!($value));
                 }
             }
         }
@@ -158,8 +160,8 @@ mod tests {
     }
 
     mod styles_combine_complex {
-        use super::super::{BOLD,UNDERLINE,REVERSED,ITALIC,BLINK,HIDDEN,DIMMED};
-        use super::super::{Styles,Style};
+        use super::super::{BOLD, UNDERLINE, REVERSED, ITALIC, BLINK, HIDDEN, DIMMED};
+        use super::super::{Styles, Style};
         use super::super::Styles::*;
 
         fn style_from_multiples(styles: &[Styles]) -> Style {
@@ -180,19 +182,19 @@ mod tests {
 
         #[test]
         fn aggreg1() {
-            let styles : &[Styles] = &[Bold, Bold, Bold];
+            let styles: &[Styles] = &[Bold, Bold, Bold];
             test_aggreg!(styles, [Bold])
         }
 
         #[test]
         fn aggreg2() {
-            let styles : &[Styles] = &[Italic, Italic, Bold, Bold];
+            let styles: &[Styles] = &[Italic, Italic, Bold, Bold];
             test_aggreg!(styles, [Bold, Italic])
         }
 
         #[test]
         fn aggreg3() {
-            let styles : &[Styles] = &[Bold, Italic, Bold];
+            let styles: &[Styles] = &[Bold, Italic, Bold];
             test_aggreg!(styles, [Bold, Italic])
         }
 
@@ -206,55 +208,55 @@ mod tests {
 
         #[test]
         fn two1() {
-            let s : &[Styles] = &[Bold, Underline];
+            let s: &[Styles] = &[Bold, Underline];
             test_combine!(s)
         }
 
         #[test]
         fn two2() {
-            let s : &[Styles] = &[Underline, Italic];
+            let s: &[Styles] = &[Underline, Italic];
             test_combine!(s)
         }
 
         #[test]
         fn two3() {
-            let s : &[Styles] = &[Bold, Italic];
+            let s: &[Styles] = &[Bold, Italic];
             test_combine!(s)
         }
 
         #[test]
         fn three1() {
-            let s : &[Styles] = &[Bold, Underline, Italic];
+            let s: &[Styles] = &[Bold, Underline, Italic];
             test_combine!(s)
         }
 
         #[test]
         fn three2() {
-            let s : &[Styles] = &[Dimmed, Underline, Italic];
+            let s: &[Styles] = &[Dimmed, Underline, Italic];
             test_combine!(s)
         }
 
         #[test]
         fn four() {
-            let s : &[Styles] = &[Dimmed, Underline, Italic, Hidden];
+            let s: &[Styles] = &[Dimmed, Underline, Italic, Hidden];
             test_combine!(s)
         }
 
         #[test]
         fn five() {
-            let s : &[Styles] = &[Dimmed, Underline, Italic, Blink, Hidden];
+            let s: &[Styles] = &[Dimmed, Underline, Italic, Blink, Hidden];
             test_combine!(s)
         }
 
         #[test]
         fn six() {
-            let s : &[Styles] = &[Bold, Dimmed, Underline, Italic, Blink, Hidden];
+            let s: &[Styles] = &[Bold, Dimmed, Underline, Italic, Blink, Hidden];
             test_combine!(s)
         }
 
         #[test]
         fn all() {
-            let s : &[Styles] = &[Bold, Dimmed, Underline, Reversed, Italic, Blink, Hidden];
+            let s: &[Styles] = &[Bold, Dimmed, Underline, Reversed, Italic, Blink, Hidden];
             test_combine!(s)
         }
 

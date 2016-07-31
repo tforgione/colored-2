@@ -74,6 +74,19 @@ Background colors: prepend the color by `on_`. Simple as that.
 
 You can clear color _and_ style anytime by using `normal()` or `clear()`
 
+#### Advanced Control:
+
+If you want to disable any coloring at compile time, you can simply with using
+the `no-color` feature.
+
+For example, you can do this in your `Cargo.toml` to disable color in tests:
+
+```toml
+[features]
+# this effectively enable the feature `no-color` of colored when testing
+test = ["colored/no-color"]
+```
+
 ## Todo
 
 - **Windows console support**: this works only with ansi term. I plan to support

@@ -8,7 +8,7 @@ pub enum Color {
     Blue,
     Magenta,
     Cyan,
-    White
+    White,
 }
 impl Color {
     pub fn to_fg_str(&self) -> &str {
@@ -20,7 +20,7 @@ impl Color {
             Color::Blue => "34",
             Color::Magenta => "35",
             Color::Cyan => "36",
-            Color::White => "37"
+            Color::White => "37",
         }
     }
 
@@ -33,7 +33,7 @@ impl Color {
             Color::Blue => "44",
             Color::Magenta => "45",
             Color::Cyan => "46",
-            Color::White => "47"
+            Color::White => "47",
         }
     }
 }

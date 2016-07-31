@@ -19,7 +19,7 @@ pub struct ColoredString {
     input: String,
     fgcolor: Option<Color>,
     bgcolor: Option<Color>,
-    style: style::Style
+    style: style::Style,
 }
 
 pub trait Colorize {
@@ -57,10 +57,10 @@ pub trait Colorize {
 
 impl ColoredString {
     pub fn is_plain(&self) -> bool {
-        (self.bgcolor.is_none() && self.fgcolor.is_none()
-            && self.style == style::CLEAR)
+        (self.bgcolor.is_none() && self.fgcolor.is_none() && self.style == style::CLEAR)
     }
 
+    #[cfg(not(feature = "no-color"))]
     fn has_colors(&self) -> bool {
         use std::env::var_os;
         use std::ffi::OsString;
@@ -69,10 +69,17 @@ impl ColoredString {
         }
         lazy_static! {
             static ref COLOR_STATE : bool = (
-                (var_os("CLICOLOR_FORCE").or(Some("0".into())) != Some("0".into())) || is_good(var_os("CLICOLOR"))
+                (var_os("CLICOLOR_FORCE").or(Some("0".into()))
+                 != Some("0".into()))
+                 || is_good(var_os("CLICOLOR"))
             );
         }
         *COLOR_STATE
+    }
+
+    #[cfg(feature = "no-color")]
+    fn has_colors(&self) -> bool {
+        false
     }
 }
 
@@ -82,7 +89,7 @@ impl Default for ColoredString {
             input: String::default(),
             fgcolor: None,
             bgcolor: None,
-            style: style::CLEAR
+            style: style::CLEAR,
         }
     }
 }
@@ -96,9 +103,7 @@ impl Deref for ColoredString {
 
 impl<'a> From<&'a str> for ColoredString {
     fn from(s: &'a str) -> Self {
-        ColoredString {
-            input: String::from(s), .. ColoredString::default()
-        }
+        ColoredString { input: String::from(s), ..ColoredString::default() }
     }
 }
 
@@ -126,9 +131,7 @@ macro_rules! def_style {
 impl Colorize for ColoredString {
     def_color!(fgcolor: black => Color::Black);
     fn red(self) -> ColoredString {
-        ColoredString {
-            fgcolor: Some(Color::Red), .. self
-        }
+        ColoredString { fgcolor: Some(Color::Red), ..self }
     }
     def_color!(fgcolor: green => Color::Green);
     def_color!(fgcolor: yellow => Color::Yellow);
@@ -140,9 +143,7 @@ impl Colorize for ColoredString {
 
     def_color!(bgcolor: on_black => Color::Black);
     fn on_red(self) -> ColoredString {
-        ColoredString {
-            bgcolor: Some(Color::Red), .. self
-        }
+        ColoredString { bgcolor: Some(Color::Red), ..self }
     }
     def_color!(bgcolor: on_green => Color::Green);
     def_color!(bgcolor: on_yellow => Color::Yellow);
@@ -153,12 +154,11 @@ impl Colorize for ColoredString {
     def_color!(bgcolor: on_white => Color::White);
 
     fn clear(self) -> ColoredString {
-        ColoredString {
-            input: self.input,
-            .. ColoredString::default()
-        }
+        ColoredString { input: self.input, ..ColoredString::default() }
     }
-    fn normal(self) -> ColoredString { self.clear() }
+    fn normal(self) -> ColoredString {
+        self.clear()
+    }
     def_style!(bold, style::Styles::Bold);
     def_style!(dimmed, style::Styles::Dimmed);
     def_style!(italic, style::Styles::Italic);
@@ -198,7 +198,7 @@ impl<'a> Colorize for &'a str {
         ColoredString {
             input: String::from(self),
             fgcolor: Some(Color::Red),
-            .. ColoredString::default()
+            ..ColoredString::default()
         }
     }
     def_str_color!(fgcolor: green => Color::Green);
@@ -214,7 +214,7 @@ impl<'a> Colorize for &'a str {
         ColoredString {
             input: String::from(self),
             bgcolor: Some(Color::Red),
-            .. ColoredString::default()
+            ..ColoredString::default()
         }
     }
     def_str_color!(bgcolor: on_green => Color::Green);
@@ -229,10 +229,12 @@ impl<'a> Colorize for &'a str {
         ColoredString {
             input: String::from(self),
             style: style::CLEAR,
-            .. ColoredString::default()
+            ..ColoredString::default()
         }
     }
-    fn normal(self) -> ColoredString { self.clear() }
+    fn normal(self) -> ColoredString {
+        self.clear()
+    }
     def_str_style!(bold, style::Styles::Bold);
     def_str_style!(dimmed, style::Styles::Dimmed);
     def_str_style!(italic, style::Styles::Italic);
@@ -246,7 +248,7 @@ impl fmt::Display for ColoredString {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 
         if !self.has_colors() || self.is_plain() {
-            return (<String as fmt::Display>::fmt(&self.input, f))
+            return (<String as fmt::Display>::fmt(&self.input, f));
         }
 
         try!(f.write_str("\x1B["));
@@ -258,13 +260,17 @@ impl fmt::Display for ColoredString {
         }
 
         if let Some(ref color) = self.bgcolor {
-            if has_wrote { try!(f.write_str(";")) }
+            if has_wrote {
+                try!(f.write_str(";"))
+            }
             try!(f.write_str(color.to_bg_str()));
             has_wrote = true;
         }
 
         if let Some(ref color) = self.fgcolor {
-            if has_wrote { try!(f.write_str(";")) }
+            if has_wrote {
+                try!(f.write_str(";"))
+            }
             try!(f.write_str(color.to_fg_str()));
         }
 
@@ -284,7 +290,8 @@ mod tests {
         // respect the formatting. Escape sequence add some padding so >= 40
         assert!(format!("{:40}", "".blue()).len() >= 40);
         // both should be truncated to 1 char before coloring
-        assert_eq!(format!("{:1.1}", "toto".blue()).len(), format!("{:1.1}", "1".blue()).len())
+        assert_eq!(format!("{:1.1}", "toto".blue()).len(),
+                   format!("{:1.1}", "1".blue()).len())
     }
 
     #[test]
@@ -323,6 +330,6 @@ mod tests {
         println!("{}", toto.white());
         println!("{}", toto.white().red().blue().green());
         // uncomment to see term output
-        //assert!(false)
+        // assert!(false)
     }
 }
