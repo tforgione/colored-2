@@ -9,6 +9,10 @@ repository = "https://github.com/mackwic/colored"
 readme = "README.md"
 keywords = ["color", "string", "term", "ansi_term", "term-painter"]
 
+[features]
+# with this feature, no color will ever be written
+no-color = []
+
 [dependencies]
 lazy_static = "0.1"
 
