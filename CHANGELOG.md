@@ -1,4 +1,8 @@
 
+# 1.3.2 (Nov 26, 2016)
+
+- FIX: usage of nested ColoredString again, no more style broken mid-line
+
 # 1.3.1 (Oct 14, 2016)
 
 - FIX: usage of ColoredString in a nested way broke the styling mid-line
