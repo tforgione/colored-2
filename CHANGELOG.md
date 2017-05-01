@@ -1,4 +1,8 @@
 
+# 1.5.0 (May 1, 2017)
+
+- FEAT: support for `"hello".color("blue")` (dynamic colors)
+
 # 1.3.2 (Nov 26, 2016)
 
 - FIX: usage of nested ColoredString again, no more style broken mid-line
