@@ -13,10 +13,15 @@
 //!    "or change advice. This is red".yellow().blue().red();
 //!    "or clear things up. This is default color and style".red().bold().clear();
 //!    "purple and magenta are the same".purple().magenta();
+//!    "you can specify color by string".color("blue").on_color("red");
 //!    "and so are normal and clear".normal().clear();
 //!    String::from("this also works!").green().bold();
 //!    format!("{:30}", "format works as expected. This will be padded".blue());
 //!    format!("{:.3}", "and this will be green but truncated to 3 chars".green());
+//!
+//!
+//! See [the `Colorize` trait](./trait.Colorize.html) for all the methods.
+//!
 
 #[macro_use]
 extern crate lazy_static;
@@ -79,7 +84,11 @@ pub trait Colorize {
     fn italic(self) -> ColoredString;
     fn underline(self) -> ColoredString;
     fn blink(self) -> ColoredString;
+    /// Historical name of `Colorize::reversed`. May be removed in a future version. Please use
+    /// `Colorize::reversed` instead
     fn reverse(self) -> ColoredString;
+    /// This should be prefered to `Colorize::reverse`.
+    fn reversed(self) -> ColoredString;
     fn hidden(self) -> ColoredString;
 }
 
@@ -273,6 +282,7 @@ impl Colorize for ColoredString {
     def_style!(underline, style::Styles::Underline);
     def_style!(blink, style::Styles::Blink);
     def_style!(reverse, style::Styles::Reversed);
+    def_style!(reversed, style::Styles::Reversed);
     def_style!(hidden, style::Styles::Hidden);
 }
 
@@ -366,6 +376,7 @@ impl<'a> Colorize for &'a str {
     def_str_style!(underline, style::Styles::Underline);
     def_str_style!(blink, style::Styles::Blink);
     def_str_style!(reverse, style::Styles::Reversed);
+    def_str_style!(reversed, style::Styles::Reversed);
     def_str_style!(hidden, style::Styles::Hidden);
 }
 
