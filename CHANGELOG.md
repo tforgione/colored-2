@@ -1,3 +1,9 @@
+
+# 1.5.2 (July 6, 2017)
+
+- FIX: method `Colorize::reversed` has been added. `Colorize::reverse` was a typo, that we will keep
+    for compatibility
+
 # 1.5.1 (May 9, 2017)
 
 - Update lazy_static to 0.2.
