@@ -3,7 +3,7 @@
 [![Build
 Status](https://travis-ci.org/mackwic/colored.svg?branch=master)](https://travis-ci.org/mackwic/colored) [![Crates.io](https://img.shields.io/crates/v/colored.svg?maxAge=2592000)](https://crates.io/crates/colored) [![Crates.io](https://img.shields.io/crates/l/colored.svg?maxAge=2592000)](https://github.com/mackwic/colored/blob/master/LICENSE)
 
-Coloring terminal so simple, you already know how to do it !
+Coloring terminal so simple, you already know how to do it!
 
 ```rust
     "this is blue".blue();
@@ -40,7 +40,7 @@ and add this to your `lib.rs` or `main.rs`:
 
     // test the example with `cargo run --example most_simple`
     fn main() {
-        // TADAA !
+        // TADAA!
         println!("{} {} !", "it".green(), "works".blue().bold());
     }
 ```
@@ -96,8 +96,8 @@ let color_res = "zorglub".parse(); // <- this returns a Result<Color, ()>
 
 ##### Colorization control
 
-If you want to disable any coloring at compile time, you can simply with using
-the `no-color` feature.
+If you want to disable any coloring at compile time, you can simply do so by
+using the `no-color` feature.
 
 For example, you can do this in your `Cargo.toml` to disable color in tests:
 
@@ -112,9 +112,9 @@ You can use have even finer control by using the `colored::control::should_color
 
 ## Todo
 
-- **Windows console support**: this works only with ansi term. I plan to support
-  the windows console also.
-- **More tests ?**: We always wecome more tests ! Please contribute !
+- **Windows console support**: this works only with ANSI terminals. I plan to
+  support the windows console also.
+- **More tests ?**: We always welcome more tests! Please contribute!
 
 ## Credits
 
@@ -126,7 +126,9 @@ output correct strings.
 
 ## Licence
 
-Mozilla Public Licence 2.0. See the LICENCE file at the root of the repository.
+[Mozilla Public Licence 2.0](https://www.mozilla.org/en-US/MPL/2.0/). See the
+[LICENCE](https://github.com/mackwic/colored/blob/master/LICENCE) file at the
+root of the repository.
 
 In non legal terms it means that:
 - if you fix a bug, you MUST give me the code of the fix (it's only fair)
@@ -141,3 +143,4 @@ In non legal terms it means that:
 - Thomas Wickham: [@mackwic](https://github.com/mackwic)
 - Corey "See More" Richardson: [@cmr](https://github.com/cmr)
 - Iban Eguia: [@Razican](https://github.com/Razican)
+- Alexis "Horgix" Chotard: [@horgix](https://github.com/horgix)
