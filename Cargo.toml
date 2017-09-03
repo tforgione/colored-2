@@ -18,4 +18,4 @@ lazy_static = "^0.2"
 
 [dev_dependencies]
 ansi_term = "^0.9"
-rspec = "1.0.0-beta.3"
+rspec = "=1.0.0-beta.3"
