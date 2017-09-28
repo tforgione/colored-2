@@ -1,4 +1,9 @@
 
+# 1.5.3 (September 28, 2017)
+
+- FEAT: derive Copy and Clone for `Color`
+- FEAT: derive Clone for `ColoredString`
+
 # 1.5.2 (July 6, 2017)
 
 - FIX: method `Colorize::reversed` has been added. `Colorize::reverse` was a typo, that we will keep
