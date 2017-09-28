@@ -145,3 +145,4 @@ In non legal terms it means that:
 - Corey "See More" Richardson: [@cmr](https://github.com/cmr)
 - Iban Eguia: [@Razican](https://github.com/Razican)
 - Alexis "Horgix" Chotard: [@horgix](https://github.com/horgix)
+- Keith Yeung: [@KiChjang](https://github.com/KiChjang)
