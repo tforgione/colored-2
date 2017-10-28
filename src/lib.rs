@@ -115,12 +115,10 @@ impl ColoredString {
         }
 
         let mut res = String::from("\x1B[");
-        let mut has_wrote = false;
-
-        if self.style != style::CLEAR {
+        let mut has_wrote = if self.style != style::CLEAR {
             res.push_str(&self.style.to_str());
-            has_wrote = true;
-        }
+            true
+        } else { false };
 
         if let Some(ref bgcolor) = self.bgcolor {
             if has_wrote {
