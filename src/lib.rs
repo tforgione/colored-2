@@ -109,6 +109,7 @@ pub trait Colorize {
     /// This should be prefered to `Colorize::reverse`.
     fn reversed(self) -> ColoredString;
     fn hidden(self) -> ColoredString;
+    fn strikethrough(self) -> ColoredString;
 }
 
 impl ColoredString {
@@ -327,6 +328,7 @@ impl Colorize for ColoredString {
     def_style!(reverse, style::Styles::Reversed);
     def_style!(reversed, style::Styles::Reversed);
     def_style!(hidden, style::Styles::Hidden);
+    def_style!(strikethrough, style::Styles::Strikethrough);
 }
 
 macro_rules! def_str_color {
@@ -453,6 +455,7 @@ impl<'a> Colorize for &'a str {
     def_str_style!(reverse, style::Styles::Reversed);
     def_str_style!(reversed, style::Styles::Reversed);
     def_str_style!(hidden, style::Styles::Hidden);
+    def_str_style!(strikethrough, style::Styles::Strikethrough);
 }
 
 impl fmt::Display for ColoredString {
