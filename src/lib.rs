@@ -106,7 +106,7 @@ pub trait Colorize {
     /// Historical name of `Colorize::reversed`. May be removed in a future version. Please use
     /// `Colorize::reversed` instead
     fn reverse(self) -> ColoredString;
-    /// This should be prefered to `Colorize::reverse`.
+    /// This should be preferred to `Colorize::reverse`.
     fn reversed(self) -> ColoredString;
     fn hidden(self) -> ColoredString;
     fn strikethrough(self) -> ColoredString;
