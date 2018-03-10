@@ -140,7 +140,7 @@ In non legal terms it means that:
 - if you change/extend the API, you MUST give me the code you changed in the
   files under MPL2.
 - you CAN'T sue me for anything about this code
-- appart from that, you can do almost whatever you want. See the LICENCE file
+- apart from that, you can do almost whatever you want. See the LICENCE file
   for details.
 
 ## Contributors

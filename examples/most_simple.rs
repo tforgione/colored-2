@@ -19,6 +19,6 @@ fn main() {
     println!("{}", s);
 
 
-    let s = String::from(format!("{} {} {}", "this".red(), "is".blue(), "easier".green()));
+    let s = format!("{} {} {}", "this".red(), "is".blue(), "easier".green());
     println!("{}", s);
 }
