@@ -30,16 +30,16 @@ extern crate lazy_static;
 #[cfg(test)]
 extern crate rspec;
 
-pub mod control;
 mod color;
+pub mod control;
 mod style;
 
 pub use color::*;
 
 use std::convert::From;
+use std::fmt;
 use std::ops::Deref;
 use std::string::String;
-use std::fmt;
 
 /// A string that may have color and/or style applied to it.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -138,7 +138,9 @@ impl ColoredString {
         let mut has_wrote = if self.style != style::CLEAR {
             res.push_str(&self.style.to_str());
             true
-        } else { false };
+        } else {
+            false
+        };
 
         if let Some(ref bgcolor) = self.bgcolor {
             if has_wrote {
@@ -396,7 +398,6 @@ impl<'a> Colorize for &'a str {
         }
     }
 
-
     def_str_color!(bgcolor: on_black => Color::Black);
     fn on_red(self) -> ColoredString {
         ColoredString {
@@ -483,8 +484,10 @@ mod tests {
         // respect the formatting. Escape sequence add some padding so >= 40
         assert!(format!("{:40}", "".blue()).len() >= 40);
         // both should be truncated to 1 char before coloring
-        assert_eq!(format!("{:1.1}", "toto".blue()).len(),
-                   format!("{:1.1}", "1".blue()).len())
+        assert_eq!(
+            format!("{:1.1}", "toto".blue()).len(),
+            format!("{:1.1}", "1".blue()).len()
+        )
     }
 
     #[test]
@@ -570,7 +573,10 @@ mod tests {
     fn compute_style_bright_blue_on_bright_blue() {
         let blue_on_blue = "\x1B[104;94m";
 
-        assert_eq!(blue_on_blue, "".bright_blue().on_bright_blue().compute_style());
+        assert_eq!(
+            blue_on_blue,
+            "".bright_blue().on_bright_blue().compute_style()
+        );
     }
 
     #[test]
@@ -591,8 +597,10 @@ mod tests {
     fn compute_style_blue_bold_on_blue() {
         let blue_bold_on_blue = "\x1B[1;44;34m";
 
-        assert_eq!(blue_bold_on_blue,
-                   "".blue().bold().on_blue().compute_style());
+        assert_eq!(
+            blue_bold_on_blue,
+            "".blue().bold().on_blue().compute_style()
+        );
     }
 
     #[test]
@@ -632,29 +640,23 @@ mod tests {
     }
 
     #[test]
-    fn escape_reset_sequence_spec_should_replace_multiple_inner_reset_sequences_with_current_style
-        () {
+    fn escape_reset_sequence_spec_should_replace_multiple_inner_reset_sequences_with_current_style()
+    {
         let italic_str = String::from("yo").italic();
-        let input = format!("start 1:{} 2:{} 3:{} end",
-                            italic_str,
-                            italic_str,
-                            italic_str);
+        let input = format!(
+            "start 1:{} 2:{} 3:{} end",
+            italic_str, italic_str, italic_str
+        );
         let style = input.blue();
 
         let output = style.escape_inner_reset_sequences();
         let blue = "\x1B[34m";
         let italic = "\x1B[3m";
         let reset = "\x1B[0m";
-        let expected = format!("start 1:{}yo{}{} 2:{}yo{}{} 3:{}yo{}{} end",
-                               italic,
-                               reset,
-                               blue,
-                               italic,
-                               reset,
-                               blue,
-                               italic,
-                               reset,
-                               blue);
+        let expected = format!(
+            "start 1:{}yo{}{} 2:{}yo{}{} 3:{}yo{}{} end",
+            italic, reset, blue, italic, reset, blue, italic, reset, blue
+        );
 
         println!("first: {}\nsecond: {}", expected, output);
 

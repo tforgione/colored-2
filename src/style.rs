@@ -1,4 +1,3 @@
-
 const CLEARV: u8 = 0b0000_0000;
 const BOLD: u8 = 0b0000_0001;
 const UNDERLINE: u8 = 0b0000_0010;
@@ -9,22 +8,23 @@ const HIDDEN: u8 = 0b0010_0000;
 const DIMMED: u8 = 0b0100_0000;
 const STRIKETHROUGH: u8 = 0b1000_0000;
 
-static STYLES: [(u8, Styles); 8] = [(BOLD, Styles::Bold),
-                                    (DIMMED, Styles::Dimmed),
-                                    (UNDERLINE, Styles::Underline),
-                                    (REVERSED, Styles::Reversed),
-                                    (ITALIC, Styles::Italic),
-                                    (BLINK, Styles::Blink),
-                                    (HIDDEN, Styles::Hidden),
-                                    (STRIKETHROUGH, Styles::Strikethrough)];
+static STYLES: [(u8, Styles); 8] = [
+    (BOLD, Styles::Bold),
+    (DIMMED, Styles::Dimmed),
+    (UNDERLINE, Styles::Underline),
+    (REVERSED, Styles::Reversed),
+    (ITALIC, Styles::Italic),
+    (BLINK, Styles::Blink),
+    (HIDDEN, Styles::Hidden),
+    (STRIKETHROUGH, Styles::Strikethrough),
+];
 
 pub static CLEAR: Style = Style(CLEARV);
 
-
-#[derive(Clone,Copy,PartialEq,Eq,Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Style(u8);
 
-#[derive(Clone,Copy,PartialEq,Eq,Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Styles {
     Clear,
     Bold,
@@ -76,13 +76,16 @@ impl Styles {
             .filter(|&&(ref mask, _)| (0 != (u & mask)))
             .map(|&(_, value)| value)
             .collect();
-        if res.is_empty() { None } else { Some(res) }
+        if res.is_empty() {
+            None
+        } else {
+            Some(res)
+        }
     }
 }
 
 impl Style {
     pub fn to_str(&self) -> String {
-
         let styles = match Styles::from_u8(self.0) {
             None => return String::new(),
             Some(s) => s,
@@ -117,7 +120,7 @@ mod tests {
 
     mod u8_to_styles_invalid_is_none {
         use super::super::CLEARV;
-        use super::super::{Styles, Style};
+        use super::super::{Style, Styles};
 
         #[test]
         fn empty_is_none() {
@@ -127,24 +130,35 @@ mod tests {
     }
 
     mod u8_to_styles_isomorphism {
-        use super::super::{BOLD, UNDERLINE, REVERSED, ITALIC, BLINK, HIDDEN, DIMMED, STRIKETHROUGH};
         use super::super::Styles;
+        use super::super::{
+            BLINK, BOLD, DIMMED, HIDDEN, ITALIC, REVERSED, STRIKETHROUGH, UNDERLINE,
+        };
 
         macro_rules! value_isomorph {
             ($name:ident, $value:expr) => {
                 #[test]
                 fn $name() {
                     let u = Styles::from_u8($value);
-                    assert!(u.is_some(), "{}: Styles::from_u8 -> None", stringify!($value));
+                    assert!(
+                        u.is_some(),
+                        "{}: Styles::from_u8 -> None",
+                        stringify!($value)
+                    );
                     let u = u.unwrap();
-                    assert!(u.len() == 1,
-                            "{}: Styles::from_u8 found {} styles (expected 1)",
-                            stringify!($value), u.len());
-                    assert!(u[0].to_u8() == $value,
-                            "{}: to_u8() doesn't match its const value",
-                            stringify!($value));
+                    assert!(
+                        u.len() == 1,
+                        "{}: Styles::from_u8 found {} styles (expected 1)",
+                        stringify!($value),
+                        u.len()
+                    );
+                    assert!(
+                        u[0].to_u8() == $value,
+                        "{}: to_u8() doesn't match its const value",
+                        stringify!($value)
+                    );
                 }
-            }
+            };
         }
 
         value_isomorph!(bold, BOLD);
@@ -158,9 +172,11 @@ mod tests {
     }
 
     mod styles_combine_complex {
-        use super::super::{BOLD, UNDERLINE, REVERSED, ITALIC, BLINK, HIDDEN, DIMMED, STRIKETHROUGH};
-        use super::super::{Styles, Style};
         use super::super::Styles::*;
+        use super::super::{Style, Styles};
+        use super::super::{
+            BLINK, BOLD, DIMMED, HIDDEN, ITALIC, REVERSED, STRIKETHROUGH, UNDERLINE,
+        };
 
         fn style_from_multiples(styles: &[Styles]) -> Style {
             let mut res = Style::new(styles[0]);
@@ -171,11 +187,11 @@ mod tests {
         }
 
         macro_rules! test_aggreg {
-            ( $styles:expr, $expect:expr ) => {{
+            ($styles:expr, $expect:expr) => {{
                 let v = style_from_multiples($styles);
                 let r = Styles::from_u8(v.0).expect("should find styles");
                 assert_eq!(&$expect as &[Styles], &r[..])
-            }}
+            }};
         }
 
         #[test]
@@ -197,11 +213,11 @@ mod tests {
         }
 
         macro_rules! test_combine {
-            ( $styles:expr ) => {{
+            ($styles:expr) => {{
                 let v = style_from_multiples($styles);
                 let r = Styles::from_u8(v.0).expect("should find styles");
                 assert_eq!($styles, &r[..])
-            }}
+            }};
         }
 
         #[test]
@@ -254,7 +270,16 @@ mod tests {
 
         #[test]
         fn all() {
-            let s: &[Styles] = &[Bold, Dimmed, Underline, Reversed, Italic, Blink, Hidden, Strikethrough];
+            let s: &[Styles] = &[
+                Bold,
+                Dimmed,
+                Underline,
+                Reversed,
+                Italic,
+                Blink,
+                Hidden,
+                Strikethrough,
+            ];
             test_combine!(s)
         }
 

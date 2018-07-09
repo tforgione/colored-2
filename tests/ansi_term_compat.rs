@@ -11,9 +11,12 @@ macro_rules! test_simple_color {
         #[test]
         fn $colored_name() {
             let s = format!("{} {}", $string, stringify!($colored_name));
-            assert_eq!(s.$colored_name().to_string(), Colour::$ansi_term_name.paint(s).to_string())
+            assert_eq!(
+                s.$colored_name().to_string(),
+                Colour::$ansi_term_name.paint(s).to_string()
+            )
         }
-    }
+    };
 }
 
 mod compat_colors {
@@ -35,16 +38,19 @@ macro_rules! test_simple_style {
         #[test]
         fn $style() {
             let s = format!("{} {}", $string, stringify!($style));
-            assert_eq!(s.$style().to_string(), ansi_term::Style::new().$style().paint(s).to_string())
+            assert_eq!(
+                s.$style().to_string(),
+                ansi_term::Style::new().$style().paint(s).to_string()
+            )
         }
-    }
+    };
 }
 
 mod compat_styles {
-    use super::colored;
-    use super::colored::*;
     use super::ansi_term;
     use super::ansi_term::*;
+    use super::colored;
+    use super::colored::*;
 
     test_simple_style!("test string", bold);
     test_simple_style!("test string", dimmed);
@@ -62,16 +68,19 @@ macro_rules! test_simple_bgcolor {
             let s = format!("{} {}", $string, stringify!($colored_name));
             assert_eq!(
                 s.$colored_name().to_string(),
-                ansi_term::Style::default().on(ansi_term::Colour::$ansi_term_name).paint(s).to_string()
+                ansi_term::Style::default()
+                    .on(ansi_term::Colour::$ansi_term_name)
+                    .paint(s)
+                    .to_string()
             )
         }
-    }
+    };
 }
 
 mod compat_bgcolors {
     use super::ansi_term;
-    use super::colored;
     use super::ansi_term::*;
+    use super::colored;
     use super::colored::*;
 
     test_simple_bgcolor!("test string", on_black, Black);
@@ -86,23 +95,27 @@ mod compat_bgcolors {
 
 mod compat_complex {
     use super::ansi_term;
-    use super::colored;
     use super::ansi_term::*;
+    use super::colored;
     use super::colored::*;
 
     #[test]
     fn complex1() {
         let s = "test string";
         let ansi = Colour::Red.on(Colour::Black).bold().italic().paint(s);
-        assert_eq!(ansi.to_string(),
-                   s.red().bold().italic().on_black().to_string());
+        assert_eq!(
+            ansi.to_string(),
+            s.red().bold().italic().on_black().to_string()
+        );
     }
 
     #[test]
     fn complex2() {
         let s = "test string";
         let ansi = Colour::Green.on(Colour::Yellow).underline().paint(s);
-        assert_eq!(ansi.to_string(),
-                   s.green().on_yellow().underline().to_string());
+        assert_eq!(
+            ansi.to_string(),
+            s.green().on_yellow().underline().to_string()
+        );
     }
 }

@@ -205,6 +205,5 @@ mod tests {
             assert_eq!(Err(()), color)
         }
 
-
     }
 }
