@@ -40,12 +40,29 @@ impl Default for ShouldColorize {
 }
 
 impl ShouldColorize {
+    /// Reads environment variables to determine whether colorization should
+    /// be used or not. `CLICOLOR_FORCE` takes highest priority, followed by
+    /// `NO_COLOR`, followed by `CLICOLOR`. In the absence of manual overrides,
+    /// which take precedence over all environment variables, the priority
+    /// of these variables can be expressed as follows.
+    ///
+    /// `NO_COLOR`  | `CLICOLOR`          | `CLICOLOR_FORCE`   | colorize?
+    /// :---------  | :---------          | :---------------   | :--------
+    /// unset       | unset               | unset              | true (default)
+    /// unset       | `!= 0`              | unset              | true
+    /// unset       | `== 0`              | unset              | false
+    /// set         | unset/`== 0`/`!= 0` | unset              | false
+    /// set/unset   | unset/`== 0`/`!= 0` | `== 0`             | false
+    /// set/unset   | unset/`== 0`/`!= 0` | `!= 0`             | true
     pub fn from_env() -> Self {
         use std::io;
 
         ShouldColorize {
             clicolor: ShouldColorize::normalize_env(env::var("CLICOLOR")),
-            clicolor_force: ShouldColorize::normalize_env(env::var("CLICOLOR_FORCE")),
+            clicolor_force: ShouldColorize::resolve_clicolor_force(
+                env::var("NO_COLOR"),
+                env::var("CLICOLOR_FORCE"),
+            ),
             ..ShouldColorize::default()
         }
     }
@@ -84,6 +101,20 @@ impl ShouldColorize {
             Err(_) => None,
         }
     }
+
+    fn resolve_clicolor_force(
+        no_color: Result<String, env::VarError>,
+        clicolor_force: Result<String, env::VarError>,
+    ) -> Option<bool> {
+        match (
+            ShouldColorize::normalize_env(no_color),
+            ShouldColorize::normalize_env(clicolor_force),
+        ) {
+            (_, Some(b)) => Some(b),
+            (Some(_), None) => Some(false),
+            (None, None) => None,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -119,6 +150,75 @@ mod specs {
                 ctx.it("should return Some(false) if == 0", || {
                     Some(false) == ShouldColorize::normalize_env(Ok(String::from("0")))
                 });
+            });
+
+            ctx.describe("::resolve_clicolor_force", |ctx| {
+                ctx.it(
+                    "should return None if neither NO_COLOR nor CLICOLOR_FORCE are set",
+                    || {
+                        assert_eq!(
+                            None,
+                            ShouldColorize::resolve_clicolor_force(
+                                Err(env::VarError::NotPresent),
+                                Err(env::VarError::NotPresent)
+                            )
+                        );
+                    },
+                );
+
+                ctx.it(
+                    "should return Some(false) if NO_COLOR is set and CLICOLOR_FORCE is unset",
+                    || {
+                        assert_eq!(
+                            Some(false),
+                            ShouldColorize::resolve_clicolor_force(
+                                Ok(String::from("0")),
+                                Err(env::VarError::NotPresent)
+                            )
+                        );
+                        assert_eq!(
+                            Some(false),
+                            ShouldColorize::resolve_clicolor_force(
+                                Ok(String::from("1")),
+                                Err(env::VarError::NotPresent)
+                            )
+                        );
+                    },
+                );
+
+                ctx.it(
+                    "should ignore NO_COLOR and return Some(forced_value) if CLICOLOR_FORCE is set to forced_value",
+                    || {
+                        assert_eq!(
+                            Some(true),
+                            ShouldColorize::resolve_clicolor_force(
+                                Ok(String::from("1")),
+                                Ok(String::from("1")),
+                            )
+                        );
+                        assert_eq!(
+                            Some(false),
+                            ShouldColorize::resolve_clicolor_force(
+                                Ok(String::from("1")),
+                                Ok(String::from("0")),
+                            )
+                        );
+                        assert_eq!(
+                            Some(false),
+                            ShouldColorize::resolve_clicolor_force(
+                                Err(env::VarError::NotPresent),
+                                Ok(String::from("0")),
+                            )
+                        );
+                        assert_eq!(
+                            Some(true),
+                            ShouldColorize::resolve_clicolor_force(
+                                Err(env::VarError::NotPresent),
+                                Ok(String::from("1")),
+                            )
+                        );
+                    },
+                );
             });
 
             ctx.describe("constructors", |ctx| {

@@ -50,6 +50,7 @@ and add this to your `lib.rs` or `main.rs`:
 
 - Safe rust, easy to use, minimal dependencies, complete test suite
 - Respect the `CLICOLOR`/`CLICOLOR_FORCE` behavior (see [the specs](http://bixense.com/clicolors/))
+- Respect the `NO_COLOR` behavior (see [the specs](https://no-color.org/))
 - Works on Linux, MacOS, and Windows (Powershell)
 
 #### Colors:
@@ -150,3 +151,4 @@ In non legal terms it means that:
 - Alexis "Horgix" Chotard: [@horgix](https://github.com/horgix)
 - Keith Yeung: [@KiChjang](https://github.com/KiChjang)
 - Kyle Galloway: [@kylegalloway](https://github.com/kylegalloway)
+- Luke Hsiao: [@lukehsiao](https://github.com/lukehsiao)
