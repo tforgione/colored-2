@@ -1,4 +1,8 @@
 
+# 1.7.0 (January, 2019)
+- TECH: update lazy\_static
+- FEAT: introduce respect for the `NO_COLOR` environment variable
+
 # 1.6.1 (July 9, 2018)
 - TECH: update lazy\_static
 - CHORE: fix typos in README and documentation

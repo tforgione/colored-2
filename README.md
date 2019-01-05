@@ -29,7 +29,7 @@ Add this in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-colored = "1.6"
+colored = "1.7"
 ```
 
 and add this to your `lib.rs` or `main.rs`:
@@ -95,7 +95,7 @@ As `Color` implements `FromStr`, `From<&str>`, and `From<String>`, you can easil
 "white string".color("zorglub");
 
 // the safer way via a Result
-let color_res = "zorglub".parse(); // <- this returns a Result<Color, ()>
+let color_res : Result<Color, ()> = "zorglub".parse();
 "red string".color(color_res.unwrap_or(Color::Red));
 ```
 
@@ -110,8 +110,8 @@ For example, you can do this in your `Cargo.toml` to disable color in tests:
 ```toml
 [features]
 # this effectively enable the feature `no-color` of colored when testing with
-# `cargo test --feature test`
-test = ["colored/no-color"]
+# `cargo test --feature dumb_terminal`
+dumb_terminal = ["colored/no-color"]
 ```
 
 You can use have even finer control by using the
