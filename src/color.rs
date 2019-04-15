@@ -1,20 +1,31 @@
 use std::convert::From;
 use std::str::FromStr;
 
+/// A color that can be one of the 8 standard color or any RGB color.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum AllColor {
     Color(Color),
     True(TrueColor),
 }
 
+/// Any RGB color.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct TrueColor(u8, u8, u8);
 
 impl TrueColor {
+    /// Creates a new RGB color from its channels values.
     pub fn new(r: u8, g: u8, b: u8) -> TrueColor {
         TrueColor(r, g, b)
     }
 
+    /// Creates a new RGB color from its hexadecimal value.
+    ///
+    /// # Example
+    /// ```
+    /// # use colored::TrueColor;
+    /// let color = TrueColor::from_hex(0xabcdef);
+    /// assert_eq!(color, TrueColor::new(171, 205, 239));
+    /// ```
     pub fn from_hex(hex: u64) -> TrueColor {
         let r = hex >> 16 & 0x0000ff;
         let g = hex >> 8 & 0x0000ff;
