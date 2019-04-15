@@ -1,6 +1,37 @@
 use std::convert::From;
 use std::str::FromStr;
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum AllColor {
+    Color(Color),
+    True(TrueColor),
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct TrueColor(u8, u8, u8);
+
+impl TrueColor {
+    pub fn new(r: u8, g: u8, b: u8) -> TrueColor {
+        TrueColor(r, g, b)
+    }
+
+    pub fn from_hex(hex: u64) -> TrueColor {
+        let r = hex >> 16 & 0x0000ff;
+        let g = hex >> 8 & 0x0000ff;
+        let b = hex & 0x0000ff;
+        TrueColor(r as u8, g as u8, b as u8)
+    }
+
+    pub fn to_fg_string(&self) -> String {
+        format!("38;2;{};{};{}", self.0, self.1, self.2)
+    }
+
+    pub fn to_bg_string(&self) -> String {
+        format!("48;2;{};{};{}", self.0, self.1, self.2)
+    }
+}
+
+
 /// The 8 standard colors.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Color {
