@@ -27,17 +27,17 @@ impl TrueColor {
     /// assert_eq!(color, TrueColor::new(171, 205, 239));
     /// ```
     pub fn from_hex(hex: u64) -> TrueColor {
-        let r = hex >> 16 & 0x0000ff;
-        let g = hex >> 8 & 0x0000ff;
-        let b = hex & 0x0000ff;
+        let r = hex >> 16 & 0x00_00ff;
+        let g = hex >> 8 & 0x00_00ff;
+        let b = hex & 0x00_00ff;
         TrueColor(r as u8, g as u8, b as u8)
     }
 
-    pub fn to_fg_string(&self) -> String {
+    pub fn to_fg_string(self) -> String {
         format!("38;2;{};{};{}", self.0, self.1, self.2)
     }
 
-    pub fn to_bg_string(&self) -> String {
+    pub fn to_bg_string(self) -> String {
         format!("48;2;{};{};{}", self.0, self.1, self.2)
     }
 }
