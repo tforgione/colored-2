@@ -76,7 +76,7 @@ pub trait Colorize {
     fn bright_white(self) -> ColoredString;
     fn color<S: Into<Color>>(self, color: S) -> ColoredString;
     fn true_color(self, r: u8, g: u8, b: u8) -> ColoredString;
-    fn hex_color(self, u64) -> ColoredString;
+    fn hex_color(self, code: u64) -> ColoredString;
     // Background Colors
     fn on_black(self) -> ColoredString;
     fn on_red(self) -> ColoredString;
@@ -98,7 +98,7 @@ pub trait Colorize {
     fn on_bright_white(self) -> ColoredString;
     fn on_color<S: Into<Color>>(self, color: S) -> ColoredString;
     fn on_true_color(self, r: u8, g: u8, b: u8) -> ColoredString;
-    fn on_hex_color(self, u64) -> ColoredString;
+    fn on_hex_color(self, code: u64) -> ColoredString;
     // Styles
     fn clear(self) -> ColoredString;
     fn normal(self) -> ColoredString;
