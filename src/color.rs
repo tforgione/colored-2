@@ -6,6 +6,7 @@ use std::str::FromStr;
 pub enum AllColor {
     Color(Color),
     True(TrueColor),
+    Palette(u8),
 }
 
 /// Any RGB color.
