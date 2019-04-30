@@ -1,4 +1,8 @@
 
+# 1.8.0 (April 30, 2019)
+
+- FEAT: support Windows 10 colors
+
 # 1.7.0 (January, 2019)
 - TECH: update lazy\_static
 - FEAT: introduce respect for the `NO_COLOR` environment variable
