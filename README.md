@@ -11,6 +11,9 @@ Coloring terminal so simple, you already know how to do it!
     "this is red on blue".red().on_blue();
     "this is also red on blue".on_blue().red();
     "bright colors are welcome as well".on_bright_blue().bright_red();
+    "or any rgb color".true_color(171, 205, 239);
+    "or any hexadecimal color".hex_color(0xabcdef);
+    "or use colors from the palette".palette(36);
     "you can also make bold comments".bold();
     println!("{} {} {}", "or use".cyan(), "any".italic().yellow(), "string type".cyan());
     "or change advice. This is red".yellow().blue().red();
@@ -36,7 +39,7 @@ and add this to your `lib.rs` or `main.rs`:
 
 ```rust
     extern crate colored; // not needed in Rust 2018
-    
+
     use colored::*;
 
     // test the example with `cargo run --example most_simple`
@@ -67,6 +70,9 @@ and add this to your `lib.rs` or `main.rs`:
 Bright colors: prepend the color by `bright_`. So easy.
 Background colors: prepend the color by `on_`. Simple as that.
 Bright Background colors: prepend the color by `on_bright_`. Not hard at all.
+Any [8-bit palette color](https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit): use `palette(u8)`. Super simple.
+Any RGB color: use `true_color(u8, u8, u8)`. Really easy.
+Any hexadecimal color: use `hex_color(0xABCDEF)`. Far from difficult.
 
 #### Styles:
 
@@ -152,3 +158,4 @@ In non legal terms it means that:
 - Keith Yeung: [@KiChjang](https://github.com/KiChjang)
 - Kyle Galloway: [@kylegalloway](https://github.com/kylegalloway)
 - Luke Hsiao: [@lukehsiao](https://github.com/lukehsiao)
+

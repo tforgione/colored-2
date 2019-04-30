@@ -249,4 +249,21 @@ mod tests {
         }
 
     }
+
+    mod hex {
+
+        pub use super::*;
+
+        #[test]
+        fn to_rgb() {
+            assert_eq!(TrueColor::new(171,205,239), TrueColor::from_hex(0xabcdef));
+            assert_eq!(TrueColor::new(236,245,235), TrueColor::from_hex(0xecf5eb));
+            assert_eq!(TrueColor::new(249,44,10), TrueColor::from_hex(0xf92c0a));
+            assert_eq!(TrueColor::new(63,70,111), TrueColor::from_hex(0x3f466f));
+            assert_eq!(TrueColor::new(186,129,28), TrueColor::from_hex(0xba811c));
+            assert_eq!(TrueColor::new(189,63,81), TrueColor::from_hex(0xbd3f51));
+        }
+
+
+    }
 }

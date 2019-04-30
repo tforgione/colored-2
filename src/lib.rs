@@ -779,4 +779,63 @@ mod tests {
     fn on_bright_color_fn() {
         assert_eq!("blue".on_bright_blue(), "blue".on_color("bright blue"))
     }
+    #[test]
+    fn compute_style_true_color() {
+        let rgb_style = "\x1B[38;2;171;205;239m";
+
+        assert_eq!(
+            rgb_style,
+            "".true_color(171, 205, 239).compute_style()
+        );
+    }
+
+    #[test]
+    fn compute_style_hex_color() {
+        let rgb_style = "\x1B[38;2;171;205;239m";
+
+        assert_eq!(
+            rgb_style,
+            "".hex_color(0xabcdef).compute_style()
+        );
+    }
+
+    #[test]
+    fn compute_style_palette_color() {
+        let palette_style = "\x1B[38;5;57m";
+
+        assert_eq!(
+            palette_style,
+            "".palette(57).compute_style()
+        );
+    }
+
+    #[test]
+    fn compute_style_on_true_color() {
+        let rgb_style = "\x1B[48;2;171;205;239m";
+
+        assert_eq!(
+            rgb_style,
+            "".on_true_color(171, 205, 239).compute_style()
+        );
+    }
+
+    #[test]
+    fn compute_style_on_hex_color() {
+        let rgb_style = "\x1B[48;2;171;205;239m";
+
+        assert_eq!(
+            rgb_style,
+            "".on_hex_color(0xabcdef).compute_style()
+        );
+    }
+
+    #[test]
+    fn compute_style_on_palette_color() {
+        let palette_style = "\x1B[48;5;57m";
+
+        assert_eq!(
+            palette_style,
+            "".on_palette(57).compute_style()
+        );
+    }
 }
