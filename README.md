@@ -29,7 +29,7 @@ Add this in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-colored = "1.7"
+colored = "1.8"
 ```
 
 and add this to your `lib.rs` or `main.rs`:
@@ -152,3 +152,5 @@ In non legal terms it means that:
 - Keith Yeung: [@KiChjang](https://github.com/KiChjang)
 - Kyle Galloway: [@kylegalloway](https://github.com/kylegalloway)
 - Luke Hsiao: [@lukehsiao](https://github.com/lukehsiao)
+- kurtlawrence: [@kurtlawrence](https://github.com/kurtlawrence)
+
